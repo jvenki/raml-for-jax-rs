@@ -77,7 +77,7 @@ public class EnumerationGenerator extends AbstractTypeGenerator<TypeSpec.Builder
       TypeSpec.Builder builder = TypeSpec.anonymousClassBuilder("$S", value);
       build.withTypeListeners().onEnumConstant(build, builder, typeDeclaration, value);
 
-      enumBuilder.addEnumConstant(Names.constantName(value),
+      enumBuilder.addEnumConstant(value,
                                   builder.build());
     }
 

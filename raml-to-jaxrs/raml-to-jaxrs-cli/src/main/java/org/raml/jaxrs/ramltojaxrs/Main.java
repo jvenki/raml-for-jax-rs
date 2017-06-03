@@ -45,6 +45,8 @@ public class Main {
     options.addOption(Option.builder("r").longOpt("resource-package").hasArg().desc("resource package").build());
     options.addOption("g", "generate-types-with", true, "generate types with plugins (jackson, gson, jaxb, javadoc, jsr303)");
     options.addOption(Option.builder("d").required().longOpt("directory").hasArg().desc("generation directory").build());
+    options.addOption(Option.builder("i").longOpt("generate-interfaces").hasArg().type(Boolean.class).desc("generate interfaces")
+        .build());
 
     try {
 
@@ -55,6 +57,7 @@ public class Main {
       String resourceDir = command.getOptionValue("r");
       String directory = command.getOptionValue("d");
       String extensions = command.getOptionValue("g");
+      String generateInterfaces = command.getOptionValue("i");
 
       List<String> ramlFiles = command.getArgList();
 
@@ -63,6 +66,11 @@ public class Main {
       configuration.setResourcePackage(resourceDir);
       configuration.setSupportPackage(supportDir);
       configuration.setOutputDirectory(new File(directory));
+
+      if (generateInterfaces != null) {
+        configuration.withInterfacesGenerated(Boolean.valueOf(generateInterfaces));
+      }
+
 
       if (extensions != null) {
         configuration.setTypeConfiguration(extensions.split(("\\s*,\\s*")));

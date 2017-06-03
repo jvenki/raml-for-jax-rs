@@ -76,16 +76,16 @@ public class SimpleInheritanceExtension implements TypeExtension {
     }
   }
 
-  private TypeSpec.Builder buildTypeImplementation(TypeContext context, V10GType objectType) {
+  protected TypeSpec.Builder buildTypeImplementation(TypeContext context, V10GType objectType) {
 
-    ClassName className = originalType.javaImplementationName(context.getModelPackage());
+    ClassName className = getImplementationName(originalType, context);
 
 
     TypeSpec.Builder typeSpec = TypeSpec
         .classBuilder(className)
         .addModifiers(Modifier.PUBLIC);
 
-    ClassName parentClassName = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
+    ClassName parentClassName = getInterfaceName(originalType, context);
 
     if (parentClassName != null) {
       typeSpec.addSuperinterface(parentClassName);
@@ -237,7 +237,7 @@ public class SimpleInheritanceExtension implements TypeExtension {
 
     }
 
-    ClassName interf = (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
+    ClassName interf = getInterfaceName(originalType, context);
 
     TypeSpec.Builder typeSpec = TypeSpec
         .interfaceBuilder(interf)
@@ -356,5 +356,13 @@ public class SimpleInheritanceExtension implements TypeExtension {
         currentBuild.getTypeExtension(annotation, objectType)
             .onType(context, typeSpec, objectType, buildPhase);
     return typeSpec;
+  }
+
+  protected ClassName getInterfaceName(V10GType originalType, TypeContext context) {
+    return (ClassName) originalType.defaultJavaTypeName(context.getModelPackage());
+  }
+
+  protected ClassName getImplementationName(V10GType originalType, TypeContext context) {
+    return originalType.javaImplementationName(context.getModelPackage());
   }
 }

@@ -107,6 +107,10 @@ public class CurrentBuild {
     return configuration.getSupportPackage();
   }
 
+  public boolean shouldGenerateInterfaces() {
+    return configuration.shouldGenerateInterfaces();
+  }
+
   public void generate(final File rootDirectory) throws IOException {
 
     if (resources.size() > 0) {

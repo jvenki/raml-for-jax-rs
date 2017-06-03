@@ -129,6 +129,9 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
   private String[] typeExtensions;
 
 
+  @Parameter(property = "generateInterfaces", defaultValue = "true")
+  private boolean generateInterfaces;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     if (skip) {
@@ -164,6 +167,7 @@ public class RamlJaxrsCodegenMojo extends AbstractMojo {
       configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
       configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
       configuration.setTypeConfiguration(generateTypesWith);
+      configuration.withInterfacesGenerated(generateInterfaces);
       if (resourceCreationExtension != null) {
 
         Class<GlobalResourceExtension> c = (Class<GlobalResourceExtension>) Class.forName(resourceCreationExtension);

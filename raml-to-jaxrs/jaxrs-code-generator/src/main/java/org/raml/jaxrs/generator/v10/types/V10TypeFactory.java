@@ -19,13 +19,11 @@ import com.squareup.javapoet.ClassName;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.JavaPoetTypeGenerator;
 import org.raml.jaxrs.generator.builders.TypeGenerator;
+import org.raml.jaxrs.generator.extension.types.TypeExtension;
 import org.raml.jaxrs.generator.ramltypes.GType;
-import org.raml.jaxrs.generator.v10.typegenerators.EnumerationGenerator;
-import org.raml.jaxrs.generator.v10.typegenerators.SimpleInheritanceExtension;
-import org.raml.jaxrs.generator.v10.typegenerators.UnionTypeGenerator;
+import org.raml.jaxrs.generator.v10.typegenerators.*;
 import org.raml.jaxrs.generator.v10.V10GType;
 import org.raml.jaxrs.generator.v10.V10TypeRegistry;
-import org.raml.jaxrs.generator.v10.typegenerators.SimpleTypeGenerator;
 
 /**
  * Created by Jean-Philippe Belanger on 12/30/16. Just potential zeroes and ones
@@ -34,10 +32,14 @@ public class V10TypeFactory {
 
   public static TypeGenerator createObjectType(final V10TypeRegistry registry, final CurrentBuild currentBuild,
                                                final V10GType originalType, boolean publicType) {
+    TypeExtension typeExtension = null;
+    if (!currentBuild.shouldGenerateInterfaces()) {
+      typeExtension = new SimpleNoInterfaceExtension(originalType, registry, currentBuild);
+    } else {
+      typeExtension = new SimpleInheritanceExtension(originalType, registry, currentBuild);
+    }
 
-    TypeGenerator generator =
-        new SimpleTypeGenerator(originalType, registry, currentBuild, new SimpleInheritanceExtension(originalType, registry,
-                                                                                                     currentBuild));
+    TypeGenerator generator = new SimpleTypeGenerator(originalType, registry, currentBuild, typeExtension);
 
     if (publicType) {
       currentBuild.newGenerator(originalType.name(), generator);

@@ -39,6 +39,7 @@ public class Configuration {
   private String[] typeConfiguration = new String[0];
   private String resourcePackage;
   private String supportPackage;
+  private boolean generateInterfaces = true;
   private List<LegacyTypeExtension> typeExtensions = new ArrayList<>();
 
   private Class<GlobalResourceExtension> defaultCreationExtension;
@@ -106,6 +107,15 @@ public class Configuration {
     this.outputDirectory = outputDirectory;
   }
 
+  public boolean shouldGenerateInterfaces() {
+    return generateInterfaces;
+  }
+
+  public Configuration withInterfacesGenerated(boolean create) {
+    this.generateInterfaces = create;
+    return this;
+  }
+
   public static Configuration defaultConfiguration() {
 
     Configuration configuration = new Configuration();
@@ -116,9 +126,8 @@ public class Configuration {
     // configuration.setJsonMapper(AnnotationStyle.valueOf(jsonMapper.toUpperCase()));
     // configuration.setJsonMapperConfiguration(jsonMapperConfiguration);
     configuration.setTypeConfiguration(new String[] {"jackson"});
-
+    configuration.withInterfacesGenerated(true);
     return configuration;
-
   }
 
   public List<LegacyTypeExtension> getTypeExtensions() {

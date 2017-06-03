@@ -20,6 +20,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import org.junit.Test;
+import org.raml.jaxrs.generator.Configuration;
 import org.raml.jaxrs.generator.CurrentBuild;
 import org.raml.jaxrs.generator.builders.BuildPhase;
 import org.raml.jaxrs.generator.builders.CodeContainer;
@@ -62,6 +63,34 @@ public class TypeTest {
         assertEquals(1, spec.fieldSpecs.size());
         assertEquals("java.lang.Object", spec.fieldSpecs.get(0).type.toString());
         assertEquals("anyType", spec.fieldSpecs.get(0).name);
+      }
+    });
+  }
+
+
+
+  @Test
+  public void generateWithoutInterfaces() throws Exception {
+
+    V10TypeRegistry registry = new V10TypeRegistry();
+    CurrentBuild cb = RamlV10.buildType(this, "scalarTypes.raml", registry, "foo", ".");
+    cb.setConfiguration(Configuration.defaultConfiguration().withInterfacesGenerated(false));
+    cb.constructClasses();
+    JavaPoetTypeGenerator gen = cb.getBuiltType("TypeOne");
+    gen.output(new CodeContainer<TypeSpec.Builder>() {
+
+      @Override
+      public void into(TypeSpec.Builder g) throws IOException {
+        System.err.println(g.build().toString());
+
+        TypeSpec spec = g.build();
+        assertEquals(0, spec.superinterfaces.size());
+        assertEquals("TypeOne", spec.name);
+        assertEquals(2, spec.fieldSpecs.size());
+        assertEquals("java.util.Map<java.lang.String, java.lang.Object>", spec.fieldSpecs.get(0).type.toString());
+        assertEquals("additionalProperties", spec.fieldSpecs.get(0).name);
+        assertEquals("java.lang.String", spec.fieldSpecs.get(1).type.toString());
+        assertEquals("day", spec.fieldSpecs.get(1).name);
       }
     });
   }
@@ -116,6 +145,9 @@ public class TypeTest {
       public void into(TypeSpec.Builder g) throws IOException {
         TypeSpec spec = g.build();
         System.err.println(spec);
+        assertEquals(1, spec.superinterfaces.size());
+        assertEquals("model.TypeOne", spec.superinterfaces.get(0).toString());
+        assertEquals("TypeOneImpl", spec.name);
         if (count == 0) {
           assertEquals("getDay", spec.methodSpecs.get(0).name);
           assertEquals("java.lang.String", spec.methodSpecs.get(0).returnType.toString());

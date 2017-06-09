@@ -73,6 +73,13 @@ public class NamesTest {
 
   }
 
+  @Test
+  public void buildConstantName() {
+    assertEquals("FOO", Names.constantName("/foo"));
+    assertEquals("FOO_BAR", Names.constantName("FOO_BAR"));
+    assertEquals("FOO_BAR", Names.constantName("_FOO_BAR"));
+    assertEquals("FOO_BAR", Names.constantName("  foo bar"));
+  }
 
   @Test
   public void buildMethod() {

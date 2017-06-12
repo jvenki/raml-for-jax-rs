@@ -128,7 +128,7 @@ public class Names {
 
   public static String constantName(String value) {
 
-    return buildJavaFriendlyName(value, NameFixer.ALL_UPPER, 0, "_");
+    return buildJavaFriendlyName(value, NameFixer.ALL_UPPER, 0);
   }
 
   public static String resourceMethodName(GResource resource, GMethod method) {
@@ -237,7 +237,7 @@ public class Names {
    * @return a {@link java.lang.String} object.
    */
   private static String buildJavaFriendlyName(final String source, NameFixer format,
-                                              int currentIndex, String separator) {
+                                              int currentIndex) {
     final String baseName =
         source.replaceAll("\\W+", "_").replaceAll("^_+", "").replaceAll("[^\\w_]", "");
     List<String> friendlyNameBits = new ArrayList<>();
@@ -259,14 +259,14 @@ public class Names {
       i++;
     }
 
-    return Strings.join(friendlyNameBits, separator);
+    return Strings.join(friendlyNameBits, "");
   }
 
   private static String buildPart(int i, String s, NameFixer format) {
     String part;
     if (s.matches(".*[^a-zA-Z0-9].*")) {
 
-      part = buildJavaFriendlyName(s, format, i, "");
+      part = buildJavaFriendlyName(s, format, i);
     } else {
       part = firstOrOthers(format, i, s);
     }
